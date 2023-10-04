@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/yellow"
+    tools:context=".DetailFrag">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Information"
+            android:textSize="30dp"
+            android:textColor="@color/darkPurple"
+            android:textAlignment="center"
+            android:layout_margin="20dp"
+            android:fontFamily="@font/paytone_one"/>
+
+        <ImageView
+            android:id="@+id/detailImage"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/avatar"/>
+
+
+        <Button
+            android:id="@+id/cameraBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:text="+"
+            android:background="@drawable/ic_add"
+            android:layout_margin="8dp"/>
+
+        <EditText
+            android:id="@+id/nameEditView"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:textColor="@color/black"
+            android:hint="Name"
+            android:fontFamily="@font/paytone_one"
+            />
+
+        <EditText
+            android:id="@+id/phoneEditView"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:textColor="@color/black"
+            android:hint="Number"
+            android:fontFamily="@font/paytone_one"
+            />
+
+        <EditText
+            android:id="@+id/emailEditView"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:textColor="@color/black"
+            android:hint="Email"
+            android:fontFamily="@font/paytone_one"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/storeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Store"
+                android:layout_marginRight="20dp"
+                android:fontFamily="@font/paytone_one"/>
+
+            <Button
+                android:id="@+id/cancelBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:layout_marginLeft="20dp"
+                android:fontFamily="@font/paytone_one"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
