@@ -2,15 +2,18 @@ package com.example.contact_management_app;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
@@ -20,6 +23,8 @@ import java.util.List;
 public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapter.ViewHolder> {
     Context context;
     List<Contact> contactList;
+    private ItemClickListener clickListener;
+    private int selectedPos;
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -37,13 +42,17 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
             cardView = itemView.findViewById(R.id.caedView);
         }
     }
-    public RecyclerviewAdapter (Context context, List<Contact> contactList){
+    public RecyclerviewAdapter (Context context, List<Contact> contactList, ItemClickListener clickListener ){
         this.context = context;
         this.contactList = contactList;
-
-
-
+        this.clickListener = clickListener;
+        this.selectedPos = RecyclerView.NO_POSITION;
     }
+
+    public void setSelectedPos(int position) {
+        this.selectedPos = position;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -77,10 +86,15 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
 
                 }
             });
+
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    if (holder.getAdapterPosition() == RecyclerView.NO_POSITION) return;
+                    clickListener.onItemClick(contactList.get(holder.getLayoutPosition()));
+                    notifyItemChanged(selectedPos);
+                    selectedPos = holder.getAdapterPosition();
+                    notifyItemChanged(selectedPos);
 
                 }
             });
@@ -94,5 +108,8 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
     public int getItemCount() {
         if (contactList != null){return contactList.size();}
         else {return 0;}
+    }
+    public interface ItemClickListener{
+        public void onItemClick(Contact contact);
     }
 }

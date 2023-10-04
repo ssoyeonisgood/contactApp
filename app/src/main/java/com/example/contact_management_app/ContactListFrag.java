@@ -16,7 +16,7 @@ import android.widget.Button;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactListFrag extends Fragment {
+public class ContactListFrag extends Fragment implements RecyclerviewAdapter.ItemClickListener {
 
     RecyclerView recyclerView;
     RecyclerviewAdapter adapter;
@@ -43,7 +43,7 @@ public class ContactListFrag extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new RecyclerviewAdapter(requireContext(), contactList);
+        adapter = new RecyclerviewAdapter(requireContext(), contactList, this);
         recyclerView.setAdapter(adapter);
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
@@ -58,5 +58,10 @@ public class ContactListFrag extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onItemClick(Contact contact) {
+        dataViewModel.setClickedValue("detail");
     }
 }
