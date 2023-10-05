@@ -12,6 +12,7 @@ public class DataViewModel extends ViewModel {
     public DataViewModel() {
         clickedValue = new MediatorLiveData<String>();
         clickedValue.setValue("contact");
+        this.updateContact = null;
     }
 
     public Contact getUpdateContact() {

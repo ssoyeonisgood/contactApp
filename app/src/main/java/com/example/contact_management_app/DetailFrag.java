@@ -29,16 +29,15 @@ public class DetailFrag extends Fragment {
     public static final String EXTRA_INFO = "default";
     private static final int REQUEST_CODE = 22;
     ImageView detailImage;
-    EditText name,phoneN, email;
+    EditText name, phoneN, email;
     Button storeBtn, cancelBtn, cameraBtn;
-    DataViewModel dataViewModel;
 
-    Contact updatedContact, newContact;
+    DataViewModel dataViewModel;
+    ContactDatabase database;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -53,7 +52,7 @@ public class DetailFrag extends Fragment {
         cameraBtn = rootView.findViewById(R.id.cameraBtn);
         detailImage = rootView.findViewById(R.id.detailImage);
 
-        ContactDatabase database = Room.databaseBuilder(requireContext(),ContactDatabase.class, "production")
+        database = Room.databaseBuilder(requireContext(),ContactDatabase.class, "production")
                 .allowMainThreadQueries().build();
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
@@ -66,11 +65,31 @@ public class DetailFrag extends Fragment {
             }
         });
 
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataViewModel.setUpdateContact(null);
+                dataViewModel.setClickedValue("contact");
+            }
+        });
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        name.setText("");
+        phoneN.setText("");
+        email.setText("");
         if (dataViewModel.getUpdateContact() != null) {
-            name.setText(dataViewModel.getUpdateContact().getName());
-            phoneN.setText(dataViewModel.getUpdateContact().getPhoneNumber());
-            email.setText(dataViewModel.getUpdateContact().getEmail());
-            detailImage.setImageBitmap(dataViewModel.getUpdateContact().getProfilPhotoBitmap());
+            Contact updatingContact = dataViewModel.getUpdateContact();
+            name.setText(updatingContact.getName());
+            name.postInvalidate();
+            phoneN.setText(updatingContact.getPhoneNumber());
+            phoneN.postInvalidate();
+            email.setText(updatingContact.getEmail());
+            email.postInvalidate();
+            detailImage.setImageBitmap(updatingContact.getProfilPhotoBitmap());
 
             storeBtn.setText("Update");
             storeBtn.setOnClickListener(new View.OnClickListener() {
@@ -88,16 +107,14 @@ public class DetailFrag extends Fragment {
                     dataViewModel.getUpdateContact().setEmail(newEmail);
                     dataViewModel.getUpdateContact().setProfilePhotoByte(photoBytes);
 
-                    updatedContact = dataViewModel.getUpdateContact();
+                    Contact updatedContact = dataViewModel.getUpdateContact();
                     database.getContactDAO().update(updatedContact);
                     dataViewModel.setUpdateContact(null);
                     dataViewModel.setClickedValue("contact");
-
                 }
             });
-
-
         }
+
         if (dataViewModel.getUpdateContact() == null) {
             storeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -109,23 +126,12 @@ public class DetailFrag extends Fragment {
                     ByteArrayOutputStream boas = new ByteArrayOutputStream();
                     photo.compress(Bitmap.CompressFormat.JPEG, 100, boas);
                     byte[] photoBytes = boas.toByteArray();
-                    newContact = new Contact(newName,newPhoneN,newEmail, photoBytes);
+                    Contact newContact = new Contact(newName,newPhoneN,newEmail, photoBytes);
                     database.getContactDAO().insert(newContact);
                     dataViewModel.setClickedValue("contact");
                 }
             });
-
         }
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dataViewModel.setClickedValue("contact");
-            }
-        });
-
-
-
-        return rootView;
     }
 
     @Override
