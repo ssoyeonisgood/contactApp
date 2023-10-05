@@ -6,10 +6,20 @@ import androidx.lifecycle.ViewModel;
 
 public class DataViewModel extends ViewModel {
     private MutableLiveData<String> clickedValue;
+    Contact updateContact;
 
-    public DataViewModel(){
+
+    public DataViewModel() {
         clickedValue = new MediatorLiveData<String>();
         clickedValue.setValue("contact");
+    }
+
+    public Contact getUpdateContact() {
+        return updateContact;
+    }
+
+    public void setUpdateContact(Contact updateContact) {
+        this.updateContact = updateContact;
     }
 
     public String getClickedValue(){

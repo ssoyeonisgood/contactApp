@@ -62,6 +62,7 @@ public class ContactListFrag extends Fragment implements RecyclerviewAdapter.Ite
 
     @Override
     public void onItemClick(Contact contact) {
+        dataViewModel.setUpdateContact(contact);
         dataViewModel.setClickedValue("detail");
     }
 }

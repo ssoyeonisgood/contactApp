@@ -33,6 +33,8 @@ public class DetailFrag extends Fragment {
     Button storeBtn, cancelBtn, cameraBtn;
     DataViewModel dataViewModel;
 
+    Contact updatedContact, newContact;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +57,7 @@ public class DetailFrag extends Fragment {
                 .allowMainThreadQueries().build();
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
+
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,22 +66,56 @@ public class DetailFrag extends Fragment {
             }
         });
 
-        storeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String newName = name.getText().toString();
-                String newPhoneN = phoneN.getText().toString();
-                String newEmail = email.getText().toString();
-                Bitmap photo = ((BitmapDrawable) detailImage.getDrawable()).getBitmap();
-                ByteArrayOutputStream boas = new ByteArrayOutputStream();
-                photo.compress(Bitmap.CompressFormat.JPEG, 100, boas);
-                byte[] photoBytes = boas.toByteArray();
-                Contact newContact = new Contact(newName,newPhoneN,newEmail, photoBytes);
-                database.getContactDAO().insert(newContact);
-                dataViewModel.setClickedValue("contact");
-            }
-        });
+        if (dataViewModel.getUpdateContact() != null) {
+            name.setText(dataViewModel.getUpdateContact().getName());
+            phoneN.setText(dataViewModel.getUpdateContact().getPhoneNumber());
+            email.setText(dataViewModel.getUpdateContact().getEmail());
+            detailImage.setImageBitmap(dataViewModel.getUpdateContact().getProfilPhotoBitmap());
 
+            storeBtn.setText("Update");
+            storeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String newName = name.getText().toString();
+                    String newPhoneN = phoneN.getText().toString();
+                    String newEmail = email.getText().toString();
+                    Bitmap photo = ((BitmapDrawable) detailImage.getDrawable()).getBitmap();
+                    ByteArrayOutputStream boas = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, boas);
+                    byte[] photoBytes = boas.toByteArray();
+                    dataViewModel.getUpdateContact().setName(newName);
+                    dataViewModel.getUpdateContact().setPhoneNumber(newPhoneN);
+                    dataViewModel.getUpdateContact().setEmail(newEmail);
+                    dataViewModel.getUpdateContact().setProfilePhotoByte(photoBytes);
+
+                    updatedContact = dataViewModel.getUpdateContact();
+                    database.getContactDAO().update(updatedContact);
+                    dataViewModel.setUpdateContact(null);
+                    dataViewModel.setClickedValue("contact");
+
+                }
+            });
+
+
+        }
+        if (dataViewModel.getUpdateContact() == null) {
+            storeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String newName = name.getText().toString();
+                    String newPhoneN = phoneN.getText().toString();
+                    String newEmail = email.getText().toString();
+                    Bitmap photo = ((BitmapDrawable) detailImage.getDrawable()).getBitmap();
+                    ByteArrayOutputStream boas = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, boas);
+                    byte[] photoBytes = boas.toByteArray();
+                    newContact = new Contact(newName,newPhoneN,newEmail, photoBytes);
+                    database.getContactDAO().insert(newContact);
+                    dataViewModel.setClickedValue("contact");
+                }
+            });
+
+        }
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

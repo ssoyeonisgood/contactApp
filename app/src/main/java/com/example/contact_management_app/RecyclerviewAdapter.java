@@ -96,6 +96,8 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
                     selectedPos = holder.getAdapterPosition();
                     notifyItemChanged(selectedPos);
 
+
+
                 }
             });
         }else {
