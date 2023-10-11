@@ -33,7 +33,7 @@ public class DetailFrag extends Fragment {
     Button storeBtn, cancelBtn, cameraBtn;
 
     DataViewModel dataViewModel;
-    ContactDatabase database;
+    Boolean cameFromAnotherApp = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,8 +52,9 @@ public class DetailFrag extends Fragment {
         cameraBtn = rootView.findViewById(R.id.cameraBtn);
         detailImage = rootView.findViewById(R.id.detailImage);
 
-        database = Room.databaseBuilder(requireContext(),ContactDatabase.class, "production")
-                .allowMainThreadQueries().build();
+//        database = Room.databaseBuilder(requireContext(),ContactDatabase.class, "production")
+//                .allowMainThreadQueries().build();
+
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
@@ -78,21 +79,24 @@ public class DetailFrag extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        name.setText("");
-        phoneN.setText("");
-        email.setText("");
 
-
-        if (dataViewModel.getUpdateContact() != null) {
-            Contact updatingContact = dataViewModel.getUpdateContact();
-            name.setText(updatingContact.getName());
-            name.postInvalidate();
-            phoneN.setText(updatingContact.getPhoneNumber());
-            phoneN.postInvalidate();
-            email.setText(updatingContact.getEmail());
-            email.postInvalidate();
-            detailImage.setImageBitmap(updatingContact.getProfilPhotoBitmap());
-
+        // existing contact
+        if (dataViewModel.getUpdateContact() != null ) {
+            if (!cameFromAnotherApp) {
+                Contact updatingContact = dataViewModel.getUpdateContact();
+                name.setText(updatingContact.getName());
+                name.postInvalidate();
+                phoneN.setText(updatingContact.getPhoneNumber());
+                phoneN.postInvalidate();
+                email.setText(updatingContact.getEmail());
+                email.postInvalidate();
+                if (updatingContact.getProfilPhotoBitmap() != null) {
+                    detailImage.setImageBitmap(updatingContact.getProfilPhotoBitmap());
+                }
+                else {
+                    detailImage.setImageResource(R.drawable.avatar);
+                }
+            }
 
             storeBtn.setText("Update");
             storeBtn.setOnClickListener(new View.OnClickListener() {
@@ -105,23 +109,31 @@ public class DetailFrag extends Fragment {
                     ByteArrayOutputStream boas = new ByteArrayOutputStream();
                     photo.compress(Bitmap.CompressFormat.JPEG, 100, boas);
                     byte[] photoBytes = boas.toByteArray();
-                    dataViewModel.getUpdateContact().setName(newName);
-                    dataViewModel.getUpdateContact().setPhoneNumber(newPhoneN);
-                    dataViewModel.getUpdateContact().setEmail(newEmail);
-                    dataViewModel.getUpdateContact().setProfilePhotoByte(photoBytes);
-
                     Contact updatedContact = dataViewModel.getUpdateContact();
-                    database.getContactDAO().update(updatedContact);
+                    updatedContact.setName(newName);
+                    updatedContact.setPhoneNumber(newPhoneN);
+                    updatedContact.setEmail(newEmail);
+                    updatedContact.setProfilePhotoByte(photoBytes);
+
+                    ContactDAO contactDAO = ContactDBInstance.getDatabase(requireContext()).getContactDAO();
+                    contactDAO.update(updatedContact);
                     dataViewModel.setUpdateContact(null);
+                    cameFromAnotherApp = false;
                     dataViewModel.setClickedValue("contact");
                 }
             });
         }
 
+        // new contact
         if (dataViewModel.getUpdateContact() == null) {
+            // reset edit view for new contacts
+            name.setText("");
+            phoneN.setText("");
+            email.setText("");
             storeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     String newName = name.getText().toString();
                     String newPhoneN = phoneN.getText().toString();
                     String newEmail = email.getText().toString();
@@ -130,7 +142,8 @@ public class DetailFrag extends Fragment {
                     photo.compress(Bitmap.CompressFormat.JPEG, 100, boas);
                     byte[] photoBytes = boas.toByteArray();
                     Contact newContact = new Contact(newName,newPhoneN,newEmail, photoBytes);
-                    database.getContactDAO().insert(newContact);
+                    ContactDAO contactDAO = ContactDBInstance.getDatabase(requireContext()).getContactDAO();
+                    contactDAO.insert(newContact);
                     dataViewModel.setClickedValue("contact");
                 }
             });
@@ -139,12 +152,13 @@ public class DetailFrag extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode,data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK ) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             detailImage.setImageBitmap(photo);
+            cameFromAnotherApp = true;
         }else {
             Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show();
         }
-        super.onActivityResult(requestCode, resultCode,data);
     }
 }

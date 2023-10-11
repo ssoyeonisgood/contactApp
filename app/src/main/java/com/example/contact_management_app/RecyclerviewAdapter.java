@@ -68,18 +68,22 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
             holder.name.setText(contact.getName());
             holder.phoneN.setText(contact.getPhoneNumber());
             holder.email.setText(contact.getEmail());
+
             if (contact.getProfilPhotoBitmap() == null) {
                 holder.image.setImageResource(R.drawable.avatar);
             }
             else {
                 holder.image.setImageBitmap(contact.getProfilPhotoBitmap());
             }
+
             holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ContactDatabase database = Room.databaseBuilder(context,ContactDatabase.class, "production")
-                            .allowMainThreadQueries().build();
-                    database.getContactDAO().delete(contact);
+                    ContactDAO contactDAO = ContactDBInstance.getDatabase(context).getContactDAO();
+
+//                  ContactDatabase database = Room.databaseBuilder(context,ContactDatabase.class, "production")
+//                            .allowMainThreadQueries().build();
+                    contactDAO.delete(contact);
                     contactList.remove(position);
                     notifyDataSetChanged();
                 }
@@ -93,13 +97,8 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
                     notifyItemChanged(selectedPos);
                     selectedPos = holder.getAdapterPosition();
                     notifyItemChanged(selectedPos);
-
-
-
                 }
             });
-        }else {
-
         }
 
     }

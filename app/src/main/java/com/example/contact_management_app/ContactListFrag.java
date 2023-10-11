@@ -46,15 +46,17 @@ public class ContactListFrag extends Fragment implements RecyclerviewAdapter.Ite
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ContactDatabase database = Room.databaseBuilder(requireContext(),ContactDatabase.class, "production")
-                .allowMainThreadQueries().build();
-        contactList =  database.getContactDAO().getAllContact();
+//        ContactDatabase database = Room.databaseBuilder(requireContext(),ContactDatabase.class, "production")
+//                .allowMainThreadQueries().build();
+
+        ContactDAO contactDAO = ContactDBInstance.getDatabase(requireContext()).getContactDAO();
 
         View rootView = inflater.inflate(R.layout.fragment_contact_list,container,false);
         recyclerView = rootView.findViewById(R.id.contactRV);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(layoutManager);
+        contactList =  contactDAO.getAllContact();
         adapter = new RecyclerviewAdapter(requireContext(), contactList, this);
         recyclerView.setAdapter(adapter);
 
@@ -105,11 +107,10 @@ public class ContactListFrag extends Fragment implements RecyclerviewAdapter.Ite
                 Cursor phoneCursor = getActivity().getContentResolver().query(uriPhone, null, selection, new String[]{id}, null);
                 if (phoneCursor.moveToNext()){
                     @SuppressLint("Range") String number = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    Contact contact = new Contact(name,number,null);
+                    Contact contact = new Contact(name,number,null );
                     contactList.add(contact);
-                    ContactDatabase database = Room.databaseBuilder(getActivity(),ContactDatabase.class, "production")
-                            .allowMainThreadQueries().build();
-                    database.getContactDAO().insert(contact);
+                    ContactDAO contactDAO = ContactDBInstance.getDatabase(requireContext()).getContactDAO();
+                    contactDAO.insert(contact);
                     phoneCursor.close();
                 }
             }
