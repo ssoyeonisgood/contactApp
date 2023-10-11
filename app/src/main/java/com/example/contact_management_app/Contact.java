@@ -79,6 +79,9 @@ public class Contact {
     }
 
     public Bitmap getProfilPhotoBitmap() {
+        if (this.profilePhotoByte == null) {
+            return null;
+        }
         return BitmapFactory.decodeByteArray(this.profilePhotoByte, 0, this.profilePhotoByte.length);
     }
 }

@@ -81,6 +81,8 @@ public class DetailFrag extends Fragment {
         name.setText("");
         phoneN.setText("");
         email.setText("");
+
+
         if (dataViewModel.getUpdateContact() != null) {
             Contact updatingContact = dataViewModel.getUpdateContact();
             name.setText(updatingContact.getName());
@@ -90,6 +92,7 @@ public class DetailFrag extends Fragment {
             email.setText(updatingContact.getEmail());
             email.postInvalidate();
             detailImage.setImageBitmap(updatingContact.getProfilPhotoBitmap());
+
 
             storeBtn.setText("Update");
             storeBtn.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +146,5 @@ public class DetailFrag extends Fragment {
             Toast.makeText(requireContext(),"Error",Toast.LENGTH_SHORT).show();
         }
         super.onActivityResult(requestCode, resultCode,data);
-
     }
 }

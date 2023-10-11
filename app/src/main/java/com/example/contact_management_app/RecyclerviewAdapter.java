@@ -82,8 +82,6 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
                     database.getContactDAO().delete(contact);
                     contactList.remove(position);
                     notifyDataSetChanged();
-
-
                 }
             });
 
