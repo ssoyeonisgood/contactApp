@@ -127,9 +127,11 @@ public class DetailFrag extends Fragment {
         // new contact
         if (dataViewModel.getUpdateContact() == null) {
             // reset edit view for new contacts
-            name.setText("");
-            phoneN.setText("");
-            email.setText("");
+            if (!cameFromAnotherApp) {
+                name.setText("");
+                phoneN.setText("");
+                email.setText("");
+            }
             storeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -144,6 +146,7 @@ public class DetailFrag extends Fragment {
                     Contact newContact = new Contact(newName,newPhoneN,newEmail, photoBytes);
                     ContactDAO contactDAO = ContactDBInstance.getDatabase(requireContext()).getContactDAO();
                     contactDAO.insert(newContact);
+                    cameFromAnotherApp = false;
                     dataViewModel.setClickedValue("contact");
                 }
             });
