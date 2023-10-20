@@ -81,8 +81,6 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
                 public void onClick(View view) {
                     ContactDAO contactDAO = ContactDBInstance.getDatabase(context).getContactDAO();
 
-//                  ContactDatabase database = Room.databaseBuilder(context,ContactDatabase.class, "production")
-//                            .allowMainThreadQueries().build();
                     contactDAO.delete(contact);
                     contactList.remove(position);
                     notifyDataSetChanged();

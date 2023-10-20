@@ -46,8 +46,7 @@ public class ContactListFrag extends Fragment implements RecyclerviewAdapter.Ite
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        ContactDatabase database = Room.databaseBuilder(requireContext(),ContactDatabase.class, "production")
-//                .allowMainThreadQueries().build();
+
 
         ContactDAO contactDAO = ContactDBInstance.getDatabase(requireContext()).getContactDAO();
 

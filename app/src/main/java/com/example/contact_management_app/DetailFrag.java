@@ -52,9 +52,6 @@ public class DetailFrag extends Fragment {
         cameraBtn = rootView.findViewById(R.id.cameraBtn);
         detailImage = rootView.findViewById(R.id.detailImage);
 
-//        database = Room.databaseBuilder(requireContext(),ContactDatabase.class, "production")
-//                .allowMainThreadQueries().build();
-
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
