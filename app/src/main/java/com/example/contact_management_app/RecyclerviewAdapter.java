@@ -39,7 +39,7 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
             phoneN = itemView.findViewById(R.id.phoneTextView);
             email = itemView.findViewById(R.id.emailTextView);
             deleteBtn = itemView.findViewById(R.id.deleteBtn);
-            cardView = itemView.findViewById(R.id.caedView);
+            cardView = itemView.findViewById(R.id.cardView);
         }
     }
     public RecyclerviewAdapter (Context context, List<Contact> contactList, ItemClickListener clickListener ){
